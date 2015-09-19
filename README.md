@@ -1,2 +1,2 @@
-# median-time
+# timestats
 TODO
