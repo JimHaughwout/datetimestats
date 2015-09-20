@@ -7,19 +7,23 @@ nyc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('America/New_York')
 london = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Europe/London'))
 singapore = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Asia/Singapore'))
 utc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.utc)
+naive = dt.datetime(2014, 1, 1, 12, 0, 0)
 
-print "nyc is ", nyc
-print "london is ", london
-print "utc is ", utc
-print "singapore is ", singapore
+print "london:    ", london
+print "naive:     ", naive
+print "nyc:       ", nyc
+print "singapore: ", singapore
+print "utc:       ", utc
 
 print '\nPrinting Alpha'
-alpha = [london, nyc, singapore, utc]
+will_fail = [london, naive, nyc, singapore, utc]
+will_pass = [london, nyc, singapore, utc]
 
-for i in alpha:
+
+for i in will_pass:
     print i
 
-ordered = sorted(alpha)
+ordered = sorted(will_pass)
 
 print "\nPrinting Ordered"
 for k in ordered:
