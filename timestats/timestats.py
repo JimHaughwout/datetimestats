@@ -3,7 +3,20 @@ import pytz
 
 
 def valid(dt_list):
-    return isinstance(dt_list, list)
+    try:
+        assert isinstance(dt_list, list), 'Not a list'
+    except Exception as e:
+        print e 
+        raise e
+        return False
+    try:
+        sorted(dt_list)
+    except Exception as e:
+        print e 
+        raise e
+        return False
+    
+    return True
 
 
 def mean(dt_list):
@@ -70,6 +83,8 @@ t2 = [london, nyc, singapore]
 t3 = [london, nyc, london]
 t4 = [london, nyc]
 
+foo = [london, naive_1]
+
 #print "naive 01:     ", naive_1
 #print "naive 02:     ", naive_2
 #print "naive 03:     ", naive_3
@@ -85,6 +100,9 @@ print "\nMedian is: %s\nMean is:   %s\n" % (median(k), mean(k))
 
 print "Is 1 valid?: %s" % valid(1)
 print "Is 'a' valid?: %s" % valid('a')
+print "Is t1 valid?: %s" % valid(t1)
+print "Is n1 valid?: %s" % valid(n1)
+print "Is foo valid?: %s" % valid(foo)
 
 
 #print "\nBreak it 1: %s" % median(1)
