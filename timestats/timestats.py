@@ -1,14 +1,11 @@
 import datetime as dt
 import pytz
-
-
-def validate_operand(input, function_name):
-    if not isinstance(input, list): 
-        raise TypeError('unsupported operand for %s, requires list of datetimes: %s' % type(input))
-
+from utils.validation import validate_operand, validate_result
 
 
 def mean(dt_list):
+    """TODO"""
+    validate_operand(dt_list)
     list_size = len(dt_list)
 
     if list_size == 1:
@@ -27,10 +24,13 @@ def mean(dt_list):
         delta = delta_total / float(list_size)
         mean_dt = base_dt + dt.timedelta(seconds=delta)
     
+    validate_result(mean_dt, "timestats.mean")
     return mean_dt
 
 
 def median(dt_list):
+    """TODO"""
+    validate_operand(dt_list)
     sorted_dt_list = sorted(dt_list)
     list_size = len(sorted_dt_list)
 
@@ -47,6 +47,7 @@ def median(dt_list):
         middle = [sorted_dt_list[lower], sorted_dt_list[upper]]
         median_dt = mean(middle)
 
+    validate_result(median, "timestats.median")
     return median_dt
 
 
