@@ -2,21 +2,10 @@ import datetime as dt
 import pytz
 
 
-def valid(dt_list):
-    try:
-        assert isinstance(dt_list, list), 'Not a list'
-    except Exception as e:
-        print e 
-        raise e
-        return False
-    try:
-        sorted(dt_list)
-    except Exception as e:
-        print e 
-        raise e
-        return False
-    
-    return True
+def validate_operand(input, function_name):
+    if not isinstance(input, list): 
+        raise TypeError('unsupported operand for %s, requires list of datetimes: %s' % type(input))
+
 
 
 def mean(dt_list):
