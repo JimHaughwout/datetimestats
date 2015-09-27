@@ -2,30 +2,47 @@ import datetime as dt
 import pytz
 #from utils.validation import validate_operand, validate_result
 
-def validate_operand(operand):
-    """TODO"""
+def validate_dt_list(operand, full_check=False):
+    """
+    Validates that an object is a actual list for timestats methods.
+
+    Rest TODO
+    """
     if not isinstance(operand, list):
         raise TypeError('unsupported operand for timestat, requires list of datetime objects: %r is %s' %
          (operand, type(operand)))
     elif not len(operand) > 0:
         raise ValueError('must have non-zero len list for timestat, passed: %r' % operand)
 
-def validate_result(answer_dt):
-    """TODO docs + comment why conditional and not assertion and why never happen"""
-    if not isinstance(answer_dt, dt.datetime):
-        raise TypeError('non-datetime object in list: %r' % answer_dt)  
-    if not answer_dt.tzinfo:
-        return answer_dt
+
+def normalize_dt(dt_obj):
+    """
+    Normalizes a datetime object. 
+
+    Validates that object is correct type (raises _TypeError_ if not). 
+    If datetime is naive, just returns it. Otherwise converts it to UTC.
+
+        :param dt_obj: datetime object to normalize
+        :return: normalized datetime object.
+
+    note::
+        Included and enforced to avoid passive errors. Included as a public
+        method as convenience for users.
+    """
+    if not isinstance(dt_obj, dt.datetime):
+        raise TypeError('non-datetime object in list: %r' % dt_obj)  
+    elif not dt_obj.tzinfo:
+        return dt_obj
     else:
-        return answer_dt.astimezone(pytz.utc)
+        return dt_obj.astimezone(pytz.utc)
+
 
 def mean(dt_list):
     """
     TODO
     will raise TypeError if any item in list is not a datetime
-    TODO if tz, convert to utc as part of validate answer
     """
-    validate_operand(dt_list)
+    validate_dt_list(dt_list)
     list_size = len(dt_list)
 
     if list_size == 1:
@@ -51,10 +68,8 @@ def median(dt_list):
     """
     TODO
     will raise TypeError if any item in list is not a datetime
-    return middlemost (not always UTC)
-    TODO if tz, convert to utc as part of validate answer
     """
-    validate_operand(dt_list)
+    validate_dt_list(dt_list)
 
     try:
         sorted_dt_list = sorted(dt_list)
