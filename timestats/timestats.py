@@ -1,40 +1,21 @@
 import datetime as dt
 import pytz
-#from utils.validation import validate_operand, validate_result
 
-def validate_dt_list(operand, full_check=False):
+OPER_ERR_MSG = """unsupported operand.
+timestat requires Iterable of datetime objects (all naive or all with tz). You passed:
+"""
+VAL_ERR_MSG = """unsupported value.
+timestat requires Iterable of datetime objects. Iterable contained:
+"""
+
+def validate_dt(candidate):
     """
-    Validates that an object is a actual list for timestats methods.
-
-    Rest TODO
+    TODO
     """
-    if not isinstance(operand, list):
-        raise TypeError('unsupported operand for timestat, requires list of datetime objects: %r is %s' %
-         (operand, type(operand)))
-    elif not len(operand) > 0:
-        raise ValueError('must have non-zero len list for timestat, passed: %r' % operand)
-
-
-def normalize_dt(dt_obj):
-    """
-    Normalizes a datetime object. 
-
-    Validates that object is correct type (raises _TypeError_ if not). 
-    If datetime is naive, just returns it. Otherwise converts it to UTC.
-
-        :param dt_obj: datetime object to normalize
-        :return: normalized datetime object.
-
-    note::
-        Included and enforced to avoid passive errors. Included as a public
-        method as convenience for users.
-    """
-    if not isinstance(dt_obj, dt.datetime):
-        raise TypeError('non-datetime object in list: %r' % dt_obj)  
-    elif not dt_obj.tzinfo:
-        return dt_obj
+    if not isinstance(candidate, dt.datetime):
+        raise TypeError(VAL_ERR_MSG + str(candidate))  
     else:
-        return dt_obj.astimezone(pytz.utc)
+        return candidate
 
 
 def mean(dt_list):
@@ -42,26 +23,31 @@ def mean(dt_list):
     TODO
     will raise TypeError if any item in list is not a datetime
     """
-    validate_dt_list(dt_list)
-    list_size = len(dt_list)
+    try:
+        list_size = len(dt_list)
+    except TypeError:
+        raise TypeError(OPER_ERR_MSG + str(dt_list))
 
     if list_size == 1:
         mean_dt = dt_list[0]
     elif (list_size == 2) and (dt_list[0] == dt_list[1]):
         mean_dt = dt_list[0]
     else:
-        if dt_list[0].tzinfo:
-            base_dt = dt.datetime(1970, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
-        else:
-            base_dt = dt.datetime(1970, 1, 1)
-        delta_total = 0
-        for item in dt_list:
-            delta_total += (item - base_dt).total_seconds()
+        try:
+            if dt_list[0].tzinfo:
+                base_dt = dt.datetime(1970, 1, 1, 0, 0, 0, tzinfo=pytz.utc)
+            else:
+                base_dt = dt.datetime(1970, 1, 1)
+            delta_total = 0
+            for item in dt_list:
+                delta_total += (item - base_dt).total_seconds()
 
-        delta = delta_total / float(list_size)
-        mean_dt = base_dt + dt.timedelta(seconds=delta)
+            delta = delta_total / float(list_size)
+            mean_dt = base_dt + dt.timedelta(seconds=delta)
+        except TypeError:
+            raise TypeError(OPER_ERR_MSG + str(dt_list))
     
-    return validate_result(mean_dt)
+    return validate_dt(mean_dt)
 
 
 def median(dt_list):
@@ -69,14 +55,11 @@ def median(dt_list):
     TODO
     will raise TypeError if any item in list is not a datetime
     """
-    validate_dt_list(dt_list)
-
     try:
         sorted_dt_list = sorted(dt_list)
+        list_size = len(sorted_dt_list)
     except TypeError:
-        raise
-    
-    list_size = len(sorted_dt_list)
+        raise TypeError(OPER_ERR_MSG + str(dt_list))
 
     if list_size == 1:
         median_dt = sorted_dt_list[0]
@@ -91,54 +74,4 @@ def median(dt_list):
         middle = [sorted_dt_list[lower], sorted_dt_list[upper]]
         median_dt = mean(middle)
 
-    #validate_result(median, "timestats.median")
-    return validate_result(median_dt)
-
-# TESTS
-# DTs  with TZ - show succeed, regardless of mixed TZs
-nyc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('America/New_York'))
-london = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Europe/London'))
-singapore = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Asia/Singapore'))
-utc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.utc)
-
-t1 = [london, nyc, singapore, utc]
-t2 = [london, nyc, singapore]
-t3 = [london, nyc, london]
-t4 = [london, nyc]
-
-# Naive DTs - should succeed
-naive_1 = dt.datetime(2015, 9, 10, 12, 0, 0)
-naive_2 = dt.datetime(2015, 9, 30, 12, 0, 0)
-naive_3 = dt.datetime(2015, 9, 22, 12, 0, 0)
-naive_4 = dt.datetime(2015, 9, 12, 12, 0, 0)
-
-n1 = [naive_1, naive_2, naive_3]
-
-# Mixed DTs - should fail
-foo = [london, naive_1]
-
-# Non lists - all should fail
-a_set = set([0])
-an_int = 1
-a_float = 2.0
-a_str = "three"
-a_tuple = (4, 5)
-
-# Zero len list - should fail
-z = []
-
-# Mixed list
-m1 = [london, an_int]
-
-# RUN IT
-"""
-k = foo
-
-if isinstance(k, list):
-    print
-    for entry in k:
-        print entry
-
-print "\nMean is: %s" % (mean(k)) 
-print "Median is:   %s\n" % (median(k)) 
-"""
+    return validate_dt(median_dt)
