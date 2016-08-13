@@ -81,8 +81,10 @@ def median(dt_list):
     .. py:function:: median(dt_list)
 
     Returns the median datetime from an Iterable collection of datetime objects.
-    Collection can be all naive datetime objects or all datatime objects with tz
-    (if non-naive datetimes are provided, result will be cast to UTC).
+    Collection can be all naive datetime objects or all datatime objects with tz.
+    If non-naive datetimes are provided and list size is odd, result will be 
+    middle-most datetime (with whatever time zone is provided). If list size is 
+    even, result will be datetimestats.mean of two middle-most values (in UTC).
     However, collection cannot be a mix of naive and non-naive datetimes.
 
     Includes short-circuiting steps to speed computations on small collections.
