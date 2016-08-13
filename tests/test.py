@@ -320,3 +320,113 @@ class DateTimeStatsTest(unittest.TestCase):
 
 		with self.assertRaises(TypeError):
 			dts.median(x1)
+
+
+	def test_min_naive(self):
+		"""
+		Tests min for a list of naive datetimes 
+		"""
+		naive_1 = dt.datetime(2015, 9, 10, 12, 0, 0)
+		naive_2 = dt.datetime(2014, 9, 10, 12, 0, 0)
+		naive_3 = dt.datetime(2017, 9, 10, 12, 0, 0)
+		naive_4 = dt.datetime(2016, 9, 10, 12, 0, 0)
+		n4 = [naive_1, naive_2, naive_3, naive_4]
+
+		self.assertEquals(dts.min(n4), naive_2)
+
+
+	def test_max_naive(self):
+		"""
+		Tests max for a list of naive datetimes 
+		"""
+		naive_1 = dt.datetime(2015, 9, 10, 12, 0, 0)
+		naive_2 = dt.datetime(2014, 9, 10, 12, 0, 0)
+		naive_3 = dt.datetime(2017, 9, 10, 12, 0, 0)
+		naive_4 = dt.datetime(2016, 9, 10, 12, 0, 0)
+		n4 = [naive_1, naive_2, naive_3, naive_4]
+
+		self.assertEquals(dts.max(n4), naive_3)
+
+
+	def test_min_tzs(self):
+		"""
+		Tests min for a list of non-naive datetimes 
+		"""
+		london = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Europe/London'))
+		nyc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('America/New_York'))
+		singapore = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Asia/Singapore'))
+		t3 = [london, nyc, singapore]
+
+		self.assertEquals(dts.min(t3), singapore)
+
+
+	def test_max_tzs(self):
+		"""
+		Tests max for a list of non-naive datetimes 
+		"""
+		london = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Europe/London'))
+		nyc = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('America/New_York'))
+		singapore = dt.datetime(2014, 1, 1, 12, 0, 0, tzinfo=pytz.timezone('Asia/Singapore'))
+		t3 = [london, nyc, singapore]
+
+		self.assertEquals(dts.max(t3), nyc)
+
+
+	def test_min_empty(self):
+		"""
+		Tests return of IndexError when passing a zero-length list
+		"""
+		n1 = list()
+
+		with self.assertRaises(IndexError):
+			dts.min(n1)
+
+
+	def test_min_invalid_operant_object(self):
+		"""
+		Tests return of a TypeError if passing non-datetime.datetime objects
+		"""
+		x1 = ['not a datetime.datetime']
+
+		with self.assertRaises(TypeError):
+			dts.min(x1)
+
+
+	def test_min_operand_not_iterable(self):
+		"""
+		Tests return of a TypeError if passing non-datetime.datetime objects
+		"""
+		x1 = 1
+
+		with self.assertRaises(TypeError):
+			dts.min(x1)
+
+
+	def test_max_empty(self):
+		"""
+		Tests return of IndexError when passing a zero-length list
+		"""
+		n1 = list()
+
+		with self.assertRaises(IndexError):
+			dts.max(n1)
+
+
+	def test_max_invalid_operant_object(self):
+		"""
+		Tests return of a TypeError if passing non-datetime.datetime objects
+		"""
+		x1 = ['not a datetime.datetime']
+
+		with self.assertRaises(TypeError):
+			dts.max(x1)
+
+
+	def test_max_operand_not_iterable(self):
+		"""
+		Tests return of a TypeError if passing non-datetime.datetime objects
+		"""
+		x1 = 1
+
+		with self.assertRaises(TypeError):
+			dts.max(x1)
